@@ -31,11 +31,11 @@ NCentral = noNaData[noNaData$Central.Air == "N",]
 airNames = c("Yes","No")
 boxplot(YCentral$Price,NCentral$Price,ylab = "Appraisal Price",
         main = "Central Air and Price box plot", names = airNames)
-#Scatterplot of Above ground lliving area and Price
+#Scatterplot of Above ground living area and Price
 ggplot(data= noNaData,mapping=aes(x= Gr.Liv.Area, y= Price)) + geom_point() 
 summary(noNaData$Price)
 ##Garage Car Capacity and Price
-#Note that homes with grages that ca fit 4 cars were excluded since there was only one home that
+#Note that homes with garages that can fit 4 cars were excluded since there was only one home that
 #fit this category.
 unique(noNaData$Garage.Cars)
 garage0  = noNaData[noNaData$Garage.Cars== 0,]
@@ -73,11 +73,6 @@ plot(myVariogram,main = "Variogram of the residuals")
 ##############################
 ##Model Fitting###############
 ##############################
-#housingExp = gls(model = Price ~ Gr.Liv.Area + House.Style + Year.Remod.Add + 
-#                  Central.Air + Full.Bath + Half.Bath + Bedroom.AbvGr + Garage.Cars , 
-#                  data = noNaData,weights = varExp(form = ~ Gr.Liv.Area),
-#                  correlation = corExp(c(1.6e+15,1e-10),form = ~ Lon + Lat, nugget = TRUE) ,method = "ML")
-#Gr.Liv.Area + Year.Remod.Add + Full.Bath + Half.Bath + Bedroom.AbvGr + Garage.Cars,
 housingExp = gls(model = Price ~ . -Lon - Lat, 
                  data = noNaData,weights = varExp(form = ~ Gr.Liv.Area + Year.Remod.Add + Garage.Cars + Bedroom.AbvGr)
                  ,correlation = corExp(form = ~ Lon + Lat, nugget = TRUE) ,method = "ML")
@@ -87,7 +82,6 @@ housingSph = gls(model = Price ~ . -Lon -Lat ,
 housingGauss = gls(model = Price ~ -Lon -Lat, 
                   data = noNaData,weights = varExp(form = ~ Gr.Liv.Area + Year.Remod.Add + Garage.Cars + Bedroom.AbvGr),
                   correlation = corGaus(form = ~Lon+Lat, nugget=TRUE) ,  method = "ML")
-#glsControl(maxIter = 500, msMaxIter=2000, returnObject = TRUE)
 ###########################
 ##Picking the best Model###
 ###########################
